@@ -14,6 +14,12 @@ func HandleGetUser(c *fiber.Ctx) error {
 	return nil
 }
 
+func HandleGetUsers(c *fiber.Ctx) error {
+
+	fmt.Printf("Trying to fetch all user data:")
+	return nil
+}
+
 func HandlePostUser(c *fiber.Ctx) error {
 	var reqParams types.CreateUserParams
 
@@ -21,6 +27,7 @@ func HandlePostUser(c *fiber.Ctx) error {
 		return err
 	}
 	fmt.Println(reqParams)
-	return c.JSON(reqParams)
+	err := types.ValidateUser(reqParams)
+	return c.JSON(err)
 
 }
