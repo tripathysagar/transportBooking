@@ -4,6 +4,7 @@ import (
 	"regexp"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -52,4 +53,20 @@ func isValidateEmail(email string) bool {
 
 	emailExpr := regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}$`)
 	return emailExpr.MatchString(email)
+}
+
+func GetUserParams(p CreateUserParams) (*User, error) {
+	encrPwd, err := bcrypt.GenerateFromPassword([]byte(p.Password), CRYPTCOST)
+	if err != nil {
+		return nil, err
+	}
+
+	u := User{
+		FirstName:         p.FirstName,
+		LastName:          p.LastName,
+		Email:             p.Email,
+		EncryptedPassword: string(encrPwd),
+	}
+
+	return &u, nil
 }
