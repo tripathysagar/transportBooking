@@ -39,8 +39,8 @@ func main() {
 	fmt.Printf("%+v", x)
 	userHandler := api.NewUserHandler(x)
 	// Routes
-	apiv1.Get("/users", api.HandleGetUsers)
-	apiv1.Get("/user/:id", api.HandleGetUser)
+	apiv1.Get("/users", userHandler.HandleGetUsers)
+	apiv1.Get("/user/:id", userHandler.HandleGetUser)
 	apiv1.Post("/user", userHandler.HandlePostUser)
 
 	// Start server

@@ -18,17 +18,28 @@ func NewUserHandler(userStore db.UserStore) *UserHandler {
 	return &UserHandler{userStore: userStore}
 }
 
-func HandleGetUser(c *fiber.Ctx) error {
+func (h *UserHandler) HandleGetUser(c *fiber.Ctx) error {
 	id := c.Params("id")
+	fmt.Println("Trying to fetch user datafor id : ", id)
 
-	fmt.Printf("Trying to fetch data for userid : %v", id)
-	return nil
+	user, err := h.userStore.GetUserByID(c.Context(), id)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(user)
+
 }
 
-func HandleGetUsers(c *fiber.Ctx) error {
+func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 
-	fmt.Printf("Trying to fetch all user data:")
-	return nil
+	fmt.Println("Trying to fetch all user data ")
+	users, err := h.userStore.GetUsers(c.Context())
+	if err != nil {
+		return err
+	}
+	return c.JSON(users)
+
 }
 
 func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
@@ -45,6 +56,7 @@ func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 
 	user, err := types.GetUserParams(reqParams)
 
+	fmt.Println("tying to post user : ", user)
 	if err != nil {
 		return err
 	}
