@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/tripathysagar/transport-booking/types"
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,7 +12,13 @@ import (
 
 const userColl = "users"
 
+type Dropper interface {
+	Drop(context.Context) error
+}
+
 type UserStore interface {
+	Dropper
+
 	GetUsers(context.Context) ([]*types.User, error)
 	GetUserByID(context.Context, string) (*types.User, error)
 	PostUser(context.Context, *types.User) (*types.User, error)
@@ -27,6 +34,11 @@ func NewMongoStore(c *mongo.Client, dbname string) *MongoUserStore {
 		client: c,
 		coll:   c.Database(dbname).Collection(userColl),
 	}
+}
+
+func (ms *MongoUserStore) Drop(ctx context.Context) error {
+	fmt.Println("--- Dropping the user store table")
+	return ms.coll.Drop(ctx)
 }
 
 func (ms *MongoUserStore) GetUsers(ctx context.Context) ([]*types.User, error) {
