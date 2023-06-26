@@ -13,3 +13,5 @@ restartdb:
 rmdb:
 	@docker stop mongodb
 	@docker rm mongodb
+test:
+	@go test -v ./...
